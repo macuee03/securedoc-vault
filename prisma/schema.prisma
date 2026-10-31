@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// 1. Tabel Pengguna (Pemilik Dokumen)
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  name      String?
+  password  String     // Password ter-hash dengan bcrypt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  documents Document[]
+}
+
+// 2. Tabel Dokumen (Menyimpan data file yang sudah dienkripsi)
+model Document {
+  id             String      @id @default(uuid())
+  title          String
+  originalName   String
+  mimeType       String      // contoh: application/pdf, image/jpeg
+  fileSize       Int         // Ukuran dalam bytes
+  encryptedData  String      @db.Text // File yang sudah dienkripsi (Ciphertext Base64)
+  iv             String      // Initialization Vector untuk AES-256-GCM
+  authTag        String      // Authentication Tag untuk memastikan data tidak dimanipulasi
+  fileHash       String      // SHA-256 Checksum untuk verifikasi integritas file asli
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  userId         String
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  shareLinks     ShareLink[]
+  auditLogs      AuditLog[]
+}
+
+// 3. Tabel Link Berbagi Aman (Fitur Self-Destruct, PIN, & Batas Akses)
+model ShareLink {
+  id           String      @id @default(uuid())
+  slug         String      @unique @default(uuid()) // URL unik, contoh: cryptavault.com/share/abc-123
+  pinHash      String?     // Opsional: PIN proteksi jika link ingin dikunci
+  maxViews     Int?        // Opsional: Batas maksimal berapa kali boleh dibuka (contoh: 1x view)
+  currentViews Int         @default(0)
+  expiresAt    DateTime?   // Opsional: Tanggal & jam link otomatis hangus
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+
+  documentId   String
+  document     Document    @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  auditLogs    AuditLog[]
+}
+
+// 4. Tabel Audit Log Trail (Mencatat siapa saja yang mengakses/mencoba membuka)
+model AuditLog {
+  id          String     @id @default(uuid())
+  action      String     // "UPLOAD", "VIEW", "DOWNLOAD", "FAILED_PIN", "EXPIRED_ACCESS"
+  ipAddress   String?
+  userAgent   String?    // Browser / OS pembuka
+  status      String     // "SUCCESS" atau "DENIED"
+  createdAt   DateTime   @default(now())
+
+  documentId  String
+  document    Document   @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  shareLinkId String?
+  shareLink   ShareLink? @relation(fields: [shareLinkId], references: [id], onDelete: SetNull)
+}
