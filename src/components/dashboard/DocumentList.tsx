@@ -47,22 +47,28 @@ export default function DocumentList({
 
   return (
     <>
-      <div className="bg-[#0e112a]/90 border border-purple-500/20 rounded-3xl p-6 md:p-8 backdrop-blur-xl">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-lg font-bold text-white flex items-center gap-2">
-              <FileText className="w-5 h-5 text-purple-400" /> Daftar Berkas di
-              Brankas
+      <div className="bg-[#0e112a]/90 border border-teal-500/20 rounded-3xl p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-[0_18px_50px_rgba(3,5,20,0.2)]">
+        <div className="flex items-start gap-3 justify-between mb-6">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[10px] uppercase tracking-[0.18em] text-teal-300/70">
+                Koleksi Anda
+              </span>
+              <span className="h-px w-8 bg-teal-500/40" />
+            </div>
+            <h2 className="text-base sm:text-lg font-bold text-white flex items-start gap-2">
+              <FileText className="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />{" "}
+              <span>Dokumen Tersimpan</span>
             </h2>
             <p className="text-xs text-slate-400 mt-0.5">
-              Semua berkas tersimpan dalam bentuk ciphertext teracak
-              (AES-256-GCM) di Neon.
+              Dokumen disimpan dalam bentuk terenkripsi dan dapat diunduh kapan
+              saja.
             </p>
           </div>
           <button
             onClick={onRefresh}
             disabled={loading}
-            className="p-2 rounded-xl bg-[#141842] border border-purple-500/30 text-purple-300 hover:text-white transition-all cursor-pointer"
+            className="p-2 rounded-xl bg-[#141842] border border-teal-500/30 text-teal-300 hover:text-white transition-all cursor-pointer shrink-0"
             title="Segarkan data"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
@@ -71,17 +77,18 @@ export default function DocumentList({
 
         {loading ? (
           <div className="text-center py-12 text-slate-400 text-xs flex flex-col items-center gap-2">
-            <RefreshCw className="w-6 h-6 animate-spin text-purple-400" />
-            <span>Memuat brankas dokumen...</span>
+            <RefreshCw className="w-6 h-6 animate-spin text-teal-400" />
+            <span>Memuat dokumen...</span>
           </div>
         ) : documents.length === 0 ? (
           <div className="text-center py-12 border border-dashed border-slate-800 rounded-2xl">
             <Lock className="w-10 h-10 text-slate-600 mx-auto mb-2" />
             <p className="text-sm text-slate-400 font-medium">
-              Brankas masih kosong
+              Belum ada dokumen
             </p>
             <p className="text-xs text-slate-500 mt-1">
-              Unggah dokumen pertama kamu di atas untuk mulai mengamankannya.
+              Unggah dokumen pertama Anda untuk mulai menggunakan penyimpanan
+              aman.
             </p>
           </div>
         ) : (
@@ -89,14 +96,14 @@ export default function DocumentList({
             {documents.map((doc) => (
               <div
                 key={doc.id}
-                className="bg-[#070b16] border border-slate-800/90 hover:border-purple-500/40 p-4 rounded-2xl transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+                className="bg-[#070b16] border border-slate-800/90 hover:border-teal-500/40 p-3.5 sm:p-4 rounded-2xl transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
               >
                 <div className="flex items-start gap-3.5">
-                  <div className="p-2.5 rounded-xl bg-purple-950/60 border border-purple-500/30 text-purple-400 shrink-0">
+                  <div className="p-2.5 rounded-xl bg-teal-950/60 border border-teal-500/30 text-teal-400 shrink-0">
                     <FileText className="w-5 h-5" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-sm text-white group-hover:text-purple-300 transition-colors">
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-sm text-white group-hover:text-teal-300 transition-colors break-words">
                       {doc.title}
                     </h3>
                     <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] text-slate-400 font-mono">
@@ -104,12 +111,12 @@ export default function DocumentList({
                       <span>•</span>
                       <span>{formatBytes(doc.fileSize)}</span>
                       <span>•</span>
-                      <span className="text-purple-400 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800/50">
+                      <span className="text-teal-400 bg-teal-950/60 px-2 py-0.5 rounded border border-teal-800/50">
                         AES-GCM
                       </span>
                     </div>
                     <div className="mt-2 text-[10px] text-slate-500 font-mono flex items-center gap-1">
-                      <Fingerprint className="w-3 h-3 text-cyan-400" />
+                      <Fingerprint className="w-3 h-3 text-teal-400" />
                       <span>
                         SHA-256: {doc.fileHash.slice(0, 16)}...
                         {doc.fileHash.slice(-8)}
@@ -118,45 +125,41 @@ export default function DocumentList({
                   </div>
                 </div>
 
-                {/* Tombol Aksi */}
-                <div className="flex items-center gap-2 self-end md:self-auto shrink-0">
-                  {/* Tombol Log Akses */}
+                {/* Tindakan dokumen */}
+                <div className="flex items-center gap-2 self-stretch md:self-auto shrink-0">
                   <button
                     onClick={() =>
                       setAuditDoc({ id: doc.id, title: doc.title })
                     }
-                    className="p-2 rounded-xl bg-[#141842] border border-purple-500/30 text-purple-300 hover:text-white transition-all cursor-pointer"
-                    title="Lihat riwayat & jejak audit akses"
+                    className="p-2 rounded-xl bg-[#141842] border border-teal-500/30 text-teal-300 hover:text-white transition-all cursor-pointer"
+                    title="Lihat riwayat akses"
                   >
                     <History className="w-4 h-4" />
                   </button>
 
-                  {/* Tombol Buat Link Berbagi */}
                   <button
                     onClick={() =>
                       setSharingDoc({ id: doc.id, title: doc.title })
                     }
-                    className="px-3 py-2 rounded-xl bg-[#141842] border border-purple-500/30 text-purple-300 hover:text-white hover:border-purple-400 transition-all flex items-center gap-1.5 text-xs font-medium cursor-pointer"
-                    title="Bagikan link dengan batas akses & PIN"
+                    className="flex-1 md:flex-none justify-center px-3 py-2 rounded-xl bg-[#141842] border border-teal-500/30 text-teal-300 hover:text-white hover:border-teal-400 transition-all flex items-center gap-1.5 text-xs font-medium cursor-pointer"
+                    title="Bagikan dengan batas akses dan PIN"
                   >
                     <Share2 className="w-3.5 h-3.5" /> Bagikan
                   </button>
 
-                  {/* Download Dokumen */}
                   <a
                     href={`/api/documents/${doc.id}/download`}
                     download
-                    className="px-3.5 py-2 rounded-xl bg-linear-to-r from-purple-600 to-indigo-600 text-white font-medium text-xs hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all flex items-center gap-1.5 cursor-pointer"
-                    title="Dekripsi dan unduh file asli"
+                    className="flex-1 md:flex-none justify-center px-3.5 py-2 rounded-xl bg-linear-to-r from-teal-500 to-sky-600 text-slate-950 font-medium text-xs hover:shadow-[0_0_15px_rgba(45,212,191,0.35)] transition-all flex items-center gap-1.5 cursor-pointer"
+                    title="Dekripsi dan unduh dokumen"
                   >
                     <Download className="w-3.5 h-3.5" /> Unduh
                   </a>
 
-                  {/* Hapus Dokumen */}
                   <button
                     onClick={() => onDelete(doc.id, doc.title)}
                     className="p-2 rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-300 hover:bg-rose-900/60 transition-all cursor-pointer"
-                    title="Hapus dari brankas"
+                    title="Hapus dokumen"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -167,7 +170,6 @@ export default function DocumentList({
         )}
       </div>
 
-      {/* Modal Share Pop-up */}
       {sharingDoc && (
         <ShareModal
           documentId={sharingDoc.id}
@@ -176,7 +178,6 @@ export default function DocumentList({
         />
       )}
 
-      {/* Modal Audit Log Pop-up */}
       {auditDoc && (
         <AuditLogModal
           documentId={auditDoc.id}

@@ -65,7 +65,7 @@ export default function AuditLogModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
-      <div className="bg-[#0e112a] border border-purple-500/30 rounded-3xl p-6 md:p-8 max-w-lg w-full relative shadow-[0_0_50px_rgba(168,85,247,0.2)] flex flex-col max-h-[85vh]">
+      <div className="bg-[#0e112a] border border-teal-500/30 rounded-3xl p-5 sm:p-6 md:p-8 max-w-lg w-full relative shadow-[0_0_50px_rgba(45,212,191,0.14)] flex flex-col max-h-[calc(100vh-2rem)]">
         {/* Tombol Tutup */}
         <button
           onClick={onClose}
@@ -75,12 +75,12 @@ export default function AuditLogModal({
         </button>
 
         <div className="flex items-center gap-3 mb-5 shrink-0">
-          <div className="p-2.5 rounded-xl bg-purple-950/70 border border-purple-500/40 text-purple-400">
+          <div className="p-2.5 rounded-xl bg-teal-950/70 border border-teal-500/40 text-teal-400">
             <Shield className="w-5 h-5" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-white">
-              Jejak Audit Keamanan
+              Riwayat Akses
             </h3>
             <p className="text-xs text-slate-400 truncate max-w-xs">
               {documentTitle}
@@ -90,19 +90,19 @@ export default function AuditLogModal({
 
         {loading ? (
           <div className="py-12 flex flex-col items-center gap-2 text-xs text-slate-400">
-            <RefreshCw className="w-6 h-6 animate-spin text-purple-400" />
-            <span>Memuat jejak audit...</span>
+            <RefreshCw className="w-6 h-6 animate-spin text-teal-400" />
+            <span>Memuat riwayat akses...</span>
           </div>
         ) : logs.length === 0 ? (
           <p className="text-xs text-slate-400 text-center py-8">
-            Belum ada riwayat aktivitas pada berkas ini.
+            Belum ada aktivitas pada dokumen ini.
           </p>
         ) : (
           <div className="overflow-y-auto space-y-3 pr-1 custom-scrollbar">
             {logs.map((log) => (
               <div
                 key={log.id}
-                className="bg-[#141842]/60 border border-purple-500/15 rounded-2xl p-3.5 flex items-start justify-between gap-3 text-xs"
+                className="bg-[#141842]/60 border border-teal-500/15 rounded-2xl p-3.5 flex items-start justify-between gap-3 text-xs"
               >
                 <div>
                   <div className="flex items-center gap-2">
@@ -111,21 +111,21 @@ export default function AuditLogModal({
                     ) : (
                       <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
                     )}
-                    <span className="font-semibold text-slate-200">
+                    <span className="font-semibold text-slate-200 break-words">
                       {formatAction(log.action)}
                     </span>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2 mt-1.5 text-[11px] text-slate-400 font-mono">
                     <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3 text-purple-400" />
+                      <Clock className="w-3 h-3 text-teal-400" />
                       {new Date(log.createdAt).toLocaleString("id-ID")}
                     </span>
                     {log.ipAddress && (
                       <>
                         <span>•</span>
                         <span className="flex items-center gap-1">
-                          <Globe className="w-3 h-3 text-cyan-400" />
+                          <Globe className="w-3 h-3 text-teal-400" />
                           IP: {log.ipAddress}
                         </span>
                       </>

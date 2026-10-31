@@ -32,19 +32,19 @@ export async function POST(
         data: { isActive: false },
       });
       return NextResponse.json(
-        { error: "Tautan ini telah kadaluarsa." },
+        { error: "Tautan ini sudah tidak berlaku." },
         { status: 410 },
       );
     }
 
-    // 3. Cek Batas Maksimal Dibuka (Self-Destruct / View-Once)
+    // 3. Cek batas akses tautan.
     if (shareLink.maxViews && shareLink.currentViews >= shareLink.maxViews) {
       await prisma.shareLink.update({
         where: { id: shareLink.id },
         data: { isActive: false },
       });
       return NextResponse.json(
-        { error: "Batas akses tautan ini telah habis (Self-Destructed)." },
+        { error: "Batas akses tautan ini telah tercapai." },
         { status: 410 },
       );
     }
@@ -54,7 +54,7 @@ export async function POST(
       if (!pin) {
         return NextResponse.json(
           {
-            error: "PIN keamanan diperlukan untuk membuka berkas ini.",
+            error: "PIN diperlukan untuk membuka dokumen ini.",
             needPin: true,
           },
           { status: 401 },
@@ -74,7 +74,7 @@ export async function POST(
           },
         });
         return NextResponse.json(
-          { error: "PIN yang kamu masukkan salah!", needPin: true },
+          { error: "PIN yang dimasukkan tidak sesuai.", needPin: true },
           { status: 401 },
         );
       }
@@ -106,7 +106,7 @@ export async function POST(
     const isTamperFree = verifyIntegrity(decryptedBuffer, doc.fileHash);
     if (!isTamperFree) {
       return NextResponse.json(
-        { error: "Peringatan Integritas: Berkas termanipulasi!" },
+        { error: "Verifikasi integritas gagal. Dokumen mungkin telah berubah." },
         { status: 400 },
       );
     }
@@ -134,7 +134,7 @@ export async function POST(
   } catch (error) {
     console.error("Gagal memproses share download:", error);
     return NextResponse.json(
-      { error: "Gagal mendekripsi dokumen." },
+      { error: "Dokumen tidak dapat diproses." },
       { status: 500 },
     );
   }

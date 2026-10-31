@@ -57,7 +57,7 @@ export default function ShareModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
-      <div className="bg-[#0e112a] border border-purple-500/30 rounded-3xl p-6 md:p-8 max-w-md w-full relative shadow-[0_0_50px_rgba(168,85,247,0.2)]">
+      <div className="bg-[#0e112a] border border-teal-500/30 rounded-3xl p-5 sm:p-6 md:p-8 max-w-md w-full max-h-[calc(100vh-2rem)] overflow-y-auto relative shadow-[0_0_50px_rgba(45,212,191,0.14)]">
         {/* Tombol Tutup */}
         <button
           onClick={onClose}
@@ -67,12 +67,12 @@ export default function ShareModal({
         </button>
 
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2.5 rounded-xl bg-purple-950/70 border border-purple-500/40 text-purple-400">
+          <div className="p-2.5 rounded-xl bg-teal-950/70 border border-teal-500/40 text-teal-400">
             <Share2 className="w-5 h-5" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-white">
-              Bagikan Berkas Aman
+              Bagikan Dokumen
             </h3>
             <p className="text-xs text-slate-400 truncate max-w-xs">
               {documentTitle}
@@ -84,23 +84,23 @@ export default function ShareModal({
           <div className="space-y-4 pt-2">
             <div className="p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
               <ShieldAlert className="w-4 h-4 shrink-0" />
-              <span>Link berhasil dibuat dengan kebijakan keamanan aktif!</span>
+              <span>Tautan berhasil dibuat dan siap dibagikan.</span>
             </div>
 
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                Tautan Publik:
+                Tautan Berbagi:
               </label>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-stretch gap-2">
                 <input
                   type="text"
                   readOnly
                   value={generatedUrl}
-                  className="w-full bg-[#141842] border border-purple-500/30 rounded-xl px-3.5 py-2 text-xs font-mono text-purple-300 select-all"
+                  className="min-w-0 w-full bg-[#141842] border border-teal-500/30 rounded-xl px-3.5 py-2 text-xs font-mono text-teal-300 select-all"
                 />
                 <button
                   onClick={handleCopy}
-                  className="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white transition-all flex items-center gap-1.5 text-xs font-medium cursor-pointer"
+                  className="justify-center px-3.5 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 transition-all flex items-center gap-1.5 text-xs font-medium cursor-pointer"
                 >
                   {copied ? (
                     <Check className="w-4 h-4" />
@@ -123,46 +123,46 @@ export default function ShareModal({
           <form onSubmit={handleGenerate} className="space-y-4 pt-2">
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1 flex items-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 text-purple-400" /> Kunci dengan
-                PIN / Password (Opsional)
+                <Lock className="w-3.5 h-3.5 text-teal-400" /> Lindungi dengan
+                PIN (opsional)
               </label>
               <input
                 type="text"
-                placeholder="Contoh: 123456 atau rahasia123"
+                placeholder="Masukkan PIN"
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}
-                className="w-full bg-[#141842]/70 border border-purple-500/30 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-400"
+                className="w-full bg-[#141842]/70 border border-teal-500/30 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-400"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-1 flex items-center gap-1.5">
-                  <Eye className="w-3.5 h-3.5 text-cyan-400" /> Batas Maks Buka
+                  <Eye className="w-3.5 h-3.5 text-teal-400" /> Batas Akses
                 </label>
                 <select
                   value={maxViews}
                   onChange={(e) => setMaxViews(e.target.value)}
-                  className="w-full bg-[#141842]/70 border border-purple-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400"
+                  className="w-full bg-[#141842]/70 border border-teal-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-400"
                 >
-                  <option value="1">1x Buka (View-Once)</option>
-                  <option value="3">Maksimal 3x Buka</option>
-                  <option value="5">Maksimal 5x Buka</option>
-                  <option value="">Tanpa Batas Unduh</option>
+                  <option value="1">1 kali akses</option>
+                  <option value="3">Maksimal 3 kali</option>
+                  <option value="5">Maksimal 5 kali</option>
+                  <option value="">Tidak dibatasi</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-1 flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-amber-400" /> Masa Berlaku
+                  <Clock className="w-3.5 h-3.5 text-amber-400" /> Berlaku Selama
                 </label>
                 <select
                   value={expireHours}
                   onChange={(e) => setExpireHours(e.target.value)}
-                  className="w-full bg-[#141842]/70 border border-purple-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400"
+                  className="w-full bg-[#141842]/70 border border-teal-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-400"
                 >
                   <option value="1">1 Jam</option>
-                  <option value="24">24 Jam (1 Hari)</option>
+                  <option value="24">24 jam</option>
                   <option value="72">3 Hari</option>
                   <option value="168">7 Hari</option>
                 </select>
@@ -172,10 +172,10 @@ export default function ShareModal({
             <button
               type="submit"
               disabled={isPending}
-              className="w-full py-2.5 rounded-xl bg-linear-to-r from-purple-600 to-indigo-600 text-white font-semibold text-xs shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.7)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-4"
+              className="w-full py-2.5 rounded-xl bg-linear-to-r from-teal-500 to-sky-600 text-slate-950 font-semibold text-xs shadow-[0_0_20px_rgba(45,212,191,0.25)] hover:shadow-[0_0_30px_rgba(45,212,191,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-4"
             >
               <Share2 className="w-4 h-4" />{" "}
-              {isPending ? "Membuat Tautan Aman..." : "Buat Tautan Rahasia"}
+              {isPending ? "Membuat tautan..." : "Buat Tautan Berbagi"}
             </button>
           </form>
         )}

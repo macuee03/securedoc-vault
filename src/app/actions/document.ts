@@ -28,15 +28,15 @@ async function getOrCreateDemoUser() {
 export async function uploadDocument(formData: FormData) {
   try {
     const file = formData.get("file") as File | null;
-    const title = (formData.get("title") as string) || "Dokumen Tanpa Judul";
+    const title = (formData.get("title") as string) || "Dokumen tanpa judul";
 
     if (!file || file.size === 0) {
-      return { success: false, error: "File tidak boleh kosong" };
+      return { success: false, error: "Pilih dokumen terlebih dahulu." };
     }
 
     // Batas file 5MB untuk database tier gratis
     if (file.size > 5 * 1024 * 1024) {
-      return { success: false, error: "Ukuran file maksimal 5 MB" };
+      return { success: false, error: "Ukuran dokumen maksimal 5 MB." };
     }
 
     // Ubah file menjadi Buffer Node.js
@@ -79,7 +79,7 @@ export async function uploadDocument(formData: FormData) {
     console.error("Gagal mengunggah dokumen:", error);
     return {
       success: false,
-      error: "Terjadi kesalahan saat mengenkripsi file.",
+      error: "Terjadi kesalahan saat mengenkripsi dokumen.",
     };
   }
 }
@@ -120,7 +120,7 @@ export async function deleteDocument(documentId: string) {
     return { success: true };
   } catch (error) {
     console.error("Gagal menghapus dokumen:", error);
-    return { success: false, error: "Gagal menghapus dokumen" };
+    return { success: false, error: "Dokumen tidak dapat dihapus." };
   }
 }
 
@@ -172,7 +172,7 @@ export async function createShareLink(
     return { success: true, slug: link.slug };
   } catch (error) {
     console.error("Gagal membuat link berbagi:", error);
-    return { success: false, error: "Gagal membuat link berbagi" };
+    return { success: false, error: "Tautan berbagi tidak dapat dibuat." };
   }
 }
 

@@ -41,7 +41,6 @@ export default function SharedDocumentPage({
   const [downloading, setDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
-  // Ambil info status link saat dibuka
   useEffect(() => {
     async function checkLink() {
       try {
@@ -51,11 +50,11 @@ export default function SharedDocumentPage({
           body: JSON.stringify({ pin: "__CHECK_ONLY__" }),
         });
 
-        // Jika respons 401 dan butuh PIN, berarti link aktif tapi butuh password
+        // Respons 401 menandakan tautan aktif dan memerlukan PIN.
         if (res.status === 401) {
           setMeta({
-            title: "Dokumen Terenkripsi",
-            originalName: "Protected_File",
+            title: "Dokumen terlindungi",
+            originalName: "Dokumen_terlindungi",
             fileSize: 0,
             mimeType: "application/octet-stream",
             fileHash: "",
@@ -72,11 +71,11 @@ export default function SharedDocumentPage({
 
         if (!res.ok) {
           setErrorMsg(
-            data?.error || "Tautan ini telah hangus atau tidak valid.",
+            data?.error || "Tautan ini sudah tidak berlaku atau tidak valid.",
           );
         }
       } catch {
-        setErrorMsg("Gagal memeriksa tautan dokumen.");
+        setErrorMsg("Tautan dokumen tidak dapat diperiksa.");
       } finally {
         setLoading(false);
       }
@@ -85,7 +84,6 @@ export default function SharedDocumentPage({
     checkLink();
   }, [slug]);
 
-  // Handler Download & Dekripsi File
   const handleDownload = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
@@ -100,15 +98,15 @@ export default function SharedDocumentPage({
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        setErrorMsg(data?.error || "Gagal mengunduh dokumen.");
+        setErrorMsg(data?.error || "Dokumen tidak dapat diunduh.");
         setDownloading(false);
         return;
       }
 
-      // Ambil file biner dan trigger download di browser
+      // Ambil file biner dan mulai unduhan di browser.
       const blob = await res.blob();
       const contentDisposition = res.headers.get("Content-Disposition");
-      let filename = "dokumen_rahasia";
+      let filename = "dokumen";
       if (contentDisposition && contentDisposition.includes("filename=")) {
         filename = decodeURIComponent(
           contentDisposition.split("filename=")[1].replace(/"/g, ""),
@@ -126,107 +124,99 @@ export default function SharedDocumentPage({
 
       setDownloadSuccess(true);
     } catch {
-      setErrorMsg("Terjadi kesalahan saat memproses unduhan.");
+      setErrorMsg("Terjadi kesalahan saat memproses dokumen.");
     } finally {
       setDownloading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#070817] text-slate-100 font-sans flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Glow */}
-      <div className="fixed top-1/4 left-1/4 w-120 h-120 bg-purple-600/12 rounded-full blur-[160px] pointer-events-none" />
-      <div className="fixed bottom-1/4 right-1/4 w-120 h-120 bg-blue-600/10 rounded-full blur-[160px] pointer-events-none" />
+    <div className="min-h-screen bg-[#070817] text-slate-100 font-sans flex items-center justify-center p-3 sm:p-4 relative overflow-hidden">
+      <div className="fixed top-1/4 left-1/4 w-120 h-120 bg-teal-600/12 rounded-full blur-[160px] pointer-events-none" />
+      <div className="fixed bottom-1/4 right-1/4 w-120 h-120 bg-sky-600/10 rounded-full blur-[160px] pointer-events-none" />
 
-      <div className="max-w-md w-full bg-[#0e112a]/90 border border-purple-500/25 rounded-3xl p-6 md:p-8 backdrop-blur-xl relative z-10 shadow-[0_0_60px_rgba(168,85,247,0.15)] text-center">
-        {/* Header Icon */}
-        <div className="w-16 h-16 rounded-2xl bg-linear-to-tr from-purple-600 to-indigo-600 mx-auto flex items-center justify-center text-white shadow-[0_0_25px_rgba(168,85,247,0.4)] mb-4">
+      <div className="max-w-md w-full bg-[#0e112a]/90 border border-teal-500/25 rounded-3xl p-5 sm:p-6 md:p-8 backdrop-blur-xl relative z-10 shadow-[0_0_60px_rgba(45,212,191,0.14)] text-center">
+        <div className="w-16 h-16 rounded-2xl bg-linear-to-tr from-teal-500 to-sky-600 mx-auto flex items-center justify-center text-slate-950 shadow-[0_0_25px_rgba(45,212,191,0.3)] mb-4">
           <ShieldCheck className="w-8 h-8" />
         </div>
 
-        <h1 className="text-xl font-extrabold text-white">
-          SecureDoc Vault Portal
+        <h1 className="text-lg sm:text-xl font-extrabold text-white">
+          SecureDoc Vault
         </h1>
         <p className="text-xs text-slate-400 mt-1 mb-6">
-          Penerima Berkas Terenkripsi End-to-End
+          Dokumen terenkripsi yang dibagikan untuk Anda
         </p>
 
         {loading ? (
           <div className="py-8 flex flex-col items-center gap-2 text-xs text-slate-400">
-            <RefreshCw className="w-6 h-6 animate-spin text-purple-400" />
-            <span>Memverifikasi izin akses tautan...</span>
+            <RefreshCw className="w-6 h-6 animate-spin text-teal-400" />
+            <span>Memeriksa akses tautan...</span>
           </div>
         ) : errorMsg ? (
-          /* TAMPILAN JIKA LINK TELAH HANGUS / EXPIRED / SELF-DESTRUCT */
           <div className="space-y-4 py-4">
             <div className="p-4 rounded-2xl bg-rose-950/60 border border-rose-500/30 text-rose-300 text-xs text-left flex items-start gap-3">
               <AlertTriangle className="w-5 h-5 shrink-0 text-rose-400 mt-0.5" />
               <div>
                 <p className="font-semibold text-rose-200">
-                  Akses Ditolak / Tidak Tersedia
+                  Akses tidak tersedia
                 </p>
                 <p className="mt-1 leading-relaxed">{errorMsg}</p>
               </div>
             </div>
             <p className="text-[11px] text-slate-500">
-              Dokumen ini mungkin telah mencapai batas unduh maksimal atau
-              otomatis dihancurkan demi privasi.
+              Tautan mungkin sudah melewati batas akses atau masa berlakunya.
             </p>
           </div>
         ) : downloadSuccess ? (
-          /* TAMPILAN SETELAH FILE BERHASIL DIUNDUH */
           <div className="space-y-4 py-4">
             <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2.5 text-left">
               <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />
               <div>
                 <p className="font-semibold text-emerald-200">
-                  File Berhasil didekripsi & diunduh!
+                  Dokumen berhasil didekripsi dan diunduh.
                 </p>
                 <p className="text-[11px] text-emerald-400/80 mt-0.5">
-                  Integritas berkas 100% cocok dengan SHA-256 asli.
+                  Verifikasi integritas SHA-256 berhasil.
                 </p>
               </div>
             </div>
             <p className="text-[11px] text-slate-500 leading-relaxed">
-              Jika tautan ini diatur sebagai <i>View-Once</i>, maka tautan ini
-              sekarang sudah otomatis hangus dan tidak dapat dibuka kembali.
+              Jika tautan ini hanya dapat digunakan sekali, tautan tersebut
+              sekarang sudah tidak dapat dibuka kembali.
             </p>
           </div>
         ) : (
-          /* FORM DOWNLOAD BERKAS */
           <form onSubmit={handleDownload} className="space-y-4 text-left">
-            <div className="bg-[#141842]/70 border border-purple-500/20 p-4 rounded-2xl">
+            <div className="bg-[#141842]/70 border border-teal-500/20 p-4 rounded-2xl">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-purple-950 text-purple-400 shrink-0">
+                <div className="p-2 rounded-xl bg-teal-950 text-teal-400 shrink-0">
                   <FileText className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-xs text-white">
-                    Dokumen Rahasia Siap Diunduh
+                    Dokumen siap diunduh
                   </h3>
-                  <div className="flex items-center gap-2 mt-1 text-[10px] text-purple-300 font-mono">
-                    <span className="bg-purple-950/80 px-2 py-0.5 rounded border border-purple-800/40">
+                  <div className="flex items-center gap-2 mt-1 text-[10px] text-teal-300 font-mono">
+                    <span className="bg-teal-950/80 px-2 py-0.5 rounded border border-teal-800/40">
                       AES-256-GCM
                     </span>
-                    <span className="text-slate-400">• Bebas Manipulasi</span>
+                    <span className="text-slate-400">• Terverifikasi</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Input PIN jika dokumen terkunci */}
             {meta?.isPinProtected && (
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-1 flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5 text-purple-400" /> Masukkan PIN
-                  Keamanan:
+                  <Lock className="w-3.5 h-3.5 text-teal-400" /> Masukkan PIN:
                 </label>
                 <input
                   type="password"
-                  placeholder="Masukkan 6-digit PIN"
+                  placeholder="Masukkan PIN"
                   value={pin}
                   onChange={(e) => setPin(e.target.value)}
-                  className="w-full bg-[#141842] border border-purple-500/30 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-400 font-mono tracking-widest text-center text-sm"
+                  className="w-full bg-[#141842] border border-teal-500/30 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-400 font-mono tracking-widest text-center text-sm"
                   required
                 />
               </div>
@@ -235,17 +225,16 @@ export default function SharedDocumentPage({
             <button
               type="submit"
               disabled={downloading}
-              className="w-full py-3 rounded-full bg-linear-to-r from-purple-600 to-indigo-600 text-white font-semibold text-xs shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.7)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2"
+              className="w-full py-3 rounded-full bg-linear-to-r from-teal-500 to-sky-600 text-slate-950 font-semibold text-xs shadow-[0_0_20px_rgba(45,212,191,0.25)] hover:shadow-[0_0_30px_rgba(45,212,191,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2"
             >
               {downloading ? (
                 <>
-                  <RefreshCw className="w-4 h-4 animate-spin" /> Mendekripsi
-                  Berkas...
+                  <RefreshCw className="w-4 h-4 animate-spin" /> Menyiapkan
+                  dokumen...
                 </>
               ) : (
                 <>
-                  <Download className="w-4 h-4" /> Dekripsi & Unduh Berkas
-                  Sekarang
+                  <Download className="w-4 h-4" /> Dekripsi dan Unduh
                 </>
               )}
             </button>
@@ -253,8 +242,8 @@ export default function SharedDocumentPage({
         )}
 
         <div className="mt-8 pt-4 border-t border-slate-800/80 text-[10px] text-slate-500 font-mono flex items-center justify-center gap-1.5">
-          <Fingerprint className="w-3 h-3 text-cyan-400" />
-          <span>Cryptographic Zero-Knowledge Verification</span>
+          <Fingerprint className="w-3 h-3 text-teal-400" />
+          <span>Verifikasi integritas SHA-256</span>
         </div>
       </div>
     </div>

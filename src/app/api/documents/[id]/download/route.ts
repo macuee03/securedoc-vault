@@ -28,7 +28,7 @@ export async function GET(
     const isTamperFree = verifyIntegrity(decryptedBuffer, doc.fileHash);
     if (!isTamperFree) {
       return new NextResponse(
-        "Peringatan Keamanan: Integritas data rusak/termanipulasi!",
+        "Verifikasi integritas gagal. Dokumen mungkin telah berubah.",
         { status: 400 },
       );
     }
@@ -54,6 +54,6 @@ export async function GET(
     });
   } catch (error) {
     console.error("Gagal mendekripsi file:", error);
-    return new NextResponse("Gagal memproses dekripsi file.", { status: 500 });
+    return new NextResponse("Dokumen tidak dapat diproses.", { status: 500 });
   }
 }
