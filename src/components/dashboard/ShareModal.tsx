@@ -71,9 +71,7 @@ export default function ShareModal({
             <Share2 className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white">
-              Bagikan Dokumen
-            </h3>
+            <h3 className="text-lg font-bold text-white">Bagikan Dokumen</h3>
             <p className="text-xs text-slate-400 truncate max-w-xs">
               {documentTitle}
             </p>
@@ -122,7 +120,7 @@ export default function ShareModal({
         ) : (
           <form onSubmit={handleGenerate} className="space-y-4 pt-2">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1 flex items-center gap-1.5">
+              <label className="block text-xs font-medium text-slate-300 mb-1 items-center gap-1.5">
                 <Lock className="w-3.5 h-3.5 text-teal-400" /> Lindungi dengan
                 PIN (opsional)
               </label>
@@ -137,7 +135,7 @@ export default function ShareModal({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1 flex items-center gap-1.5">
+                <label className="block text-xs font-medium text-slate-300 mb-1 items-center gap-1.5">
                   <Eye className="w-3.5 h-3.5 text-teal-400" /> Batas Akses
                 </label>
                 <select
@@ -153,8 +151,9 @@ export default function ShareModal({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1 flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-amber-400" /> Berlaku Selama
+                <label className="block text-xs font-medium text-slate-300 mb-1 items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-amber-400" /> Berlaku
+                  Selama
                 </label>
                 <select
                   value={expireHours}
